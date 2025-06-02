@@ -101,7 +101,6 @@ int main(int argc, char *argv[])
             cls_ptr = get_class(ctx.kvptr_arr, ctx.kvptrs_len);
             populate_format(text_buf, sizeof(text_buf), ctx.kvptr_arr, ctx.kvptrs_len, ctx.opts.textf);
             populate_format(tooltip_buf, sizeof(tooltip_buf), ctx.kvptr_arr, ctx.kvptrs_len, ctx.opts.tooltipf);
-            /* scroll the buffers */
 
             print_waybarf(text_buf, tooltip_buf, cls_ptr);
 
