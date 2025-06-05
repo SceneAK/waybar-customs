@@ -4,8 +4,8 @@
 struct Opts {
     char            mpd_sun_path[108];
     unsigned short  max_text_len;
-    unsigned int    text_scroll_len;
     unsigned int    update_rate_ms;
+    unsigned int    scroll_delay_ticks;
 
     char           *textf;
     char           *tooltipf;

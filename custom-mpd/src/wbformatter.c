@@ -21,17 +21,16 @@ size_t populate_format(char *buf, size_t buf_size,
             for(j = 0; j < kvptrs_len; j++)
             {
                 key_len = strlen(kvptrs[j].key);
-                if(strncmp(fmt + i, kvptrs[j].key, key_len) == 0){
-                    i += key_len;
-                    
-                    val_len = strlen(kvptrs[j].val);
-                    cpy_len = MIN(val_len, buf_size - buf_len - 1);
-
-                    memcpy(buf + buf_len, kvptrs[j].val, cpy_len);
-                    buf_len += cpy_len;
-
-                    break;
+                if(strncmp(fmt + i, kvptrs[j].key, key_len) != 0){
+                    continue;
                 }
+
+                i += key_len;
+                val_len = strlen(kvptrs[j].val);
+                cpy_len = MIN(val_len, buf_size - buf_len - 1);
+
+                memcpy(buf + buf_len, kvptrs[j].val, cpy_len);
+                buf_len += cpy_len;
             }
         }else {
             buf[buf_len] = fmt[i];

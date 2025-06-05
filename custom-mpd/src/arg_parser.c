@@ -8,9 +8,10 @@ void print_usage(void)
 {
     printf("Options: \n");
     printf("  -U [arg]      Path to the MPD unix socket. Default is $XDG_RUNTIME_DIR/mpd/socket \n");
-    printf("  -R [arg]      Update rate (ms) at which polling timeouts and song title text scrolls\n");
-    printf("  -T [arg]      Set the text format (Example: \"Title: $_title_or_filename, Progress: $elapsed_fmtted:$duration_fmtted(s)). NOTE: escape the sigil with (\\) if you're in the terminal\n");
+    printf("  -R [arg]      Update rate in miliseconds at which polling timeouts and song title text scrolls\n");
+    printf("  -T [arg]      Set the text format (Example: \"Title: \\$_title_or_filename, Progress: \\$elapsed_fmtted:\\$duration_fmtted(s)). NOTE: escape the sigil with (\\) if you're in the terminal\n");
     printf("  -t [arg]      Set the tooltip format\n");
+    printf("  -d [arg]      Set the starting delay before scrolling in update ticks.\n");
 }
 
 struct Opts parse_opts(int int_argc, char *argv[])
@@ -25,9 +26,11 @@ struct Opts parse_opts(int int_argc, char *argv[])
     strncpy(dflt_sun_path, run_dir != NULL ? run_dir : "/run", sizeof(dflt_sun_path)-1);
     strncat(dflt_sun_path, "/mpd/socket", sizeof(dflt_sun_path) - strlen(dflt_sun_path) - 1);
 
+    /* Set Defaults */
     memset(&opts, 0, sizeof(struct Opts));
-    opts.max_text_len = 45;
-    opts.update_rate_ms = 1000;
+    opts.max_text_len = 30;
+    opts.update_rate_ms = 350;
+    opts.scroll_delay_ticks = 8;
     opts.textf = "$_title_or_filename";
     opts.tooltipf = "Artist: $Artist\\nAlbum: $Album\\nPos:$song/$playlistlength\\n ($elapsed_fmtted/$duration_fmtted)";
     strncpy(opts.mpd_sun_path, dflt_sun_path, sizeof(opts.mpd_sun_path)-1);
@@ -66,6 +69,14 @@ struct Opts parse_opts(int int_argc, char *argv[])
                 i++;
             }else{
                 printf("Missing tooltip after -t\n");
+                exit(EXIT_FAILURE);
+            }
+        }else if(strcmp(argv[i], "-d") == 0){
+            if(i + 1 < argc){
+                opts.scroll_delay_ticks = strtol(argv[i+1], NULL, 10);
+                i++;
+            }else{
+                printf("Missing tooltip after -d\n");
                 exit(EXIT_FAILURE);
             }
         }else{
